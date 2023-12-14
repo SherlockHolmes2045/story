@@ -6,10 +6,10 @@ import 'package:provider/provider.dart';
 import 'package:story/story_image.dart';
 
 typedef _StoryItemBuilder = Widget Function(
-  BuildContext context,
-  int pageIndex,
-  int storyIndex,
-);
+    BuildContext context,
+    int pageIndex,
+    int storyIndex,
+    );
 
 typedef _StoryConfigFunction = int Function(int pageIndex);
 
@@ -30,7 +30,7 @@ class StoryPageView extends StatefulWidget {
     this.onPageLimitReached,
     this.indicatorDuration = const Duration(seconds: 5),
     this.indicatorPadding =
-        const EdgeInsets.symmetric(vertical: 32, horizontal: 8),
+    const EdgeInsets.symmetric(vertical: 32, horizontal: 8),
     this.backgroundColor = Colors.black,
     this.indicatorAnimationController,
     this.onPageChanged,
@@ -118,66 +118,63 @@ class _StoryPageViewState extends State<StoryPageView> {
 
   @override
   Widget build(BuildContext context) {
-    return ColoredBox(
-      color: widget.backgroundColor,
-      child: PageView.builder(
-        controller: pageController,
-        itemCount: widget.pageLength,
-        onPageChanged: widget.onPageChanged,
-        itemBuilder: (context, index) {
-          final isLeaving = (index - currentPageValue) <= 0;
-          final t = (index - currentPageValue);
-          final rotationY = lerpDouble(0, 30, t as double)!;
-          final maxOpacity = 0.8;
-          final num opacity =
-              lerpDouble(0, maxOpacity, t.abs())!.clamp(0.0, maxOpacity);
-          final isPaging = opacity != maxOpacity;
-          final transform = Matrix4.identity();
-          transform.setEntry(3, 2, 0.003);
-          transform.rotateY(-rotationY * (pi / 180.0));
-          return Transform(
-            alignment: isLeaving ? Alignment.centerRight : Alignment.centerLeft,
-            transform: transform,
-            child: Stack(
-              children: [
-                _StoryPageBuilder.wrapped(
-                  showShadow: widget.showShadow,
-                  indicatorHeight: widget.indicatorHeight,
-                  pageLength: widget.pageLength,
-                  storyLength: widget.storyLength(index),
-                  initialStoryIndex: widget.initialStoryIndex?.call(index) ?? 0,
-                  pageIndex: index,
-                  animateToPage: (index) {
-                    pageController!.animateToPage(index,
-                        duration: Duration(milliseconds: 500),
-                        curve: Curves.ease);
-                  },
-                  isCurrentPage: currentPageValue == index,
-                  isPaging: isPaging,
-                  onPageLimitReached: widget.onPageLimitReached,
-                  itemBuilder: widget.itemBuilder,
-                  gestureItemBuilder: widget.gestureItemBuilder,
-                  indicatorDuration: widget.indicatorDuration,
-                  indicatorPadding: widget.indicatorPadding,
-                  indicatorAnimationController:
-                      widget.indicatorAnimationController,
-                  indicatorUnvisitedColor: widget.indicatorUnvisitedColor,
-                  indicatorVisitedColor: widget.indicatorVisitedColor,
-                ),
-                if (isPaging && !isLeaving)
-                  Positioned.fill(
-                    child: Opacity(
-                      opacity: opacity as double,
-                      child: ColoredBox(
-                        color: Colors.black87,
-                      ),
+    return PageView.builder(
+      controller: pageController,
+      itemCount: widget.pageLength,
+      onPageChanged: widget.onPageChanged,
+      itemBuilder: (context, index) {
+        final isLeaving = (index - currentPageValue) <= 0;
+        final t = (index - currentPageValue);
+        final rotationY = lerpDouble(0, 30, t as double)!;
+        final maxOpacity = 0.8;
+        final num opacity =
+        lerpDouble(0, maxOpacity, t.abs())!.clamp(0.0, maxOpacity);
+        final isPaging = opacity != maxOpacity;
+        final transform = Matrix4.identity();
+        transform.setEntry(3, 2, 0.003);
+        transform.rotateY(-rotationY * (pi / 180.0));
+        return Transform(
+          alignment: isLeaving ? Alignment.centerRight : Alignment.centerLeft,
+          transform: transform,
+          child: Stack(
+            children: [
+              _StoryPageBuilder.wrapped(
+                showShadow: widget.showShadow,
+                indicatorHeight: widget.indicatorHeight,
+                pageLength: widget.pageLength,
+                storyLength: widget.storyLength(index),
+                initialStoryIndex: widget.initialStoryIndex?.call(index) ?? 0,
+                pageIndex: index,
+                animateToPage: (index) {
+                  pageController!.animateToPage(index,
+                      duration: Duration(milliseconds: 500),
+                      curve: Curves.ease);
+                },
+                isCurrentPage: currentPageValue == index,
+                isPaging: isPaging,
+                onPageLimitReached: widget.onPageLimitReached,
+                itemBuilder: widget.itemBuilder,
+                gestureItemBuilder: widget.gestureItemBuilder,
+                indicatorDuration: widget.indicatorDuration,
+                indicatorPadding: widget.indicatorPadding,
+                indicatorAnimationController:
+                widget.indicatorAnimationController,
+                indicatorUnvisitedColor: widget.indicatorUnvisitedColor,
+                indicatorVisitedColor: widget.indicatorVisitedColor,
+              ),
+              if (isPaging && !isLeaving)
+                Positioned.fill(
+                  child: Opacity(
+                    opacity: opacity as double,
+                    child: ColoredBox(
+                      color: Colors.black87,
                     ),
                   ),
-              ],
-            ),
-          );
-        },
-      ),
+                ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
@@ -229,7 +226,7 @@ class _StoryPageBuilder extends StatefulWidget {
     required Duration indicatorDuration,
     required EdgeInsetsGeometry indicatorPadding,
     required ValueNotifier<IndicatorAnimationCommand>?
-        indicatorAnimationController,
+    indicatorAnimationController,
     required Color indicatorVisitedColor,
     required Color indicatorUnvisitedColor,
     required double indicatorHeight,
@@ -241,24 +238,25 @@ class _StoryPageBuilder extends StatefulWidget {
           create: (_context) => _StoryLimitController(),
         ),
         ChangeNotifierProvider(
-          create: (_context) => _StoryStackController(
-            storyLength: storyLength,
-            onPageBack: () {
-              if (pageIndex != 0) {
-                animateToPage(pageIndex - 1);
-              }
-            },
-            onPageForward: () {
-              if (pageIndex == pageLength - 1) {
-                _context
-                    .read<_StoryLimitController>()
-                    .onPageLimitReached(onPageLimitReached);
-              } else {
-                animateToPage(pageIndex + 1);
-              }
-            },
-            initialStoryIndex: initialStoryIndex,
-          ),
+          create: (_context) =>
+              _StoryStackController(
+                storyLength: storyLength,
+                onPageBack: () {
+                  if (pageIndex != 0) {
+                    animateToPage(pageIndex - 1);
+                  }
+                },
+                onPageForward: () {
+                  if (pageIndex == pageLength - 1) {
+                    _context
+                        .read<_StoryLimitController>()
+                        .onPageLimitReached(onPageLimitReached);
+                  } else {
+                    animateToPage(pageIndex + 1);
+                  }
+                },
+                initialStoryIndex: initialStoryIndex,
+              ),
         ),
       ],
       child: _StoryPageBuilder._(
@@ -333,8 +331,9 @@ class _StoryPageBuilderState extends State<_StoryPageBuilder>
     animationController = AnimationController(
       vsync: this,
       duration: widget.indicatorDuration,
-    )..addStatusListener(
-        (status) {
+    )
+      ..addStatusListener(
+            (status) {
           if (status == AnimationStatus.completed) {
             context.read<_StoryStackController>().increment(
                 restartAnimation: () => animationController.forward(from: 0));
@@ -360,30 +359,32 @@ class _StoryPageBuilderState extends State<_StoryPageBuilder>
       fit: StackFit.loose,
       alignment: Alignment.topLeft,
       children: [
-        Positioned.fill(
+        /*Positioned.fill(
           child: ColoredBox(
             color: Theme.of(context).scaffoldBackgroundColor,
           ),
-        ),
+        ),*/
         Positioned.fill(
           child: widget.itemBuilder(
             context,
             widget.pageIndex,
-            context.watch<_StoryStackController>().value,
+            context
+                .watch<_StoryStackController>()
+                .value,
           ),
         ),
         Container(
           height: 50,
           decoration: widget.showShadow
               ? BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      spreadRadius: 10,
-                      blurRadius: 20,
-                    ),
-                  ],
-                )
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                spreadRadius: 10,
+                blurRadius: 20,
+              ),
+            ],
+          )
               : null,
         ),
         _Indicators(
@@ -402,10 +403,12 @@ class _StoryPageBuilderState extends State<_StoryPageBuilder>
         ),
         Positioned.fill(
           child: widget.gestureItemBuilder?.call(
-                context,
-                widget.pageIndex,
-                context.watch<_StoryStackController>().value,
-              ) ??
+            context,
+            widget.pageIndex,
+            context
+                .watch<_StoryStackController>()
+                .value,
+          ) ??
               const SizedBox.shrink(),
         ),
       ],
@@ -463,10 +466,10 @@ class _Gestures extends StatelessWidget {
             child: GestureDetector(
               onTap: () {
                 context.read<_StoryStackController>().increment(
-                      restartAnimation: () =>
-                          animationController!.forward(from: 0),
-                      completeAnimation: () => animationController!.value = 1,
-                    );
+                  restartAnimation: () =>
+                      animationController!.forward(from: 0),
+                  completeAnimation: () => animationController!.value = 1,
+                );
               },
               onTapDown: (_) {
                 animationController!.stop();
@@ -531,16 +534,20 @@ class _IndicatorsState extends State<_Indicators> {
       widget.animationController!.forward();
     }
     indicatorAnimation =
-        Tween(begin: 0.0, end: 1.0).animate(widget.animationController!)
-          ..addListener(() {
-            setState(() {});
-          });
+    Tween(begin: 0.0, end: 1.0).animate(widget.animationController!)
+      ..addListener(() {
+        setState(() {});
+      });
   }
 
   @override
   Widget build(BuildContext context) {
-    final int currentStoryIndex = context.watch<_StoryStackController>().value;
-    final bool isStoryEnded = context.watch<_StoryLimitController>().value;
+    final int currentStoryIndex = context
+        .watch<_StoryStackController>()
+        .value;
+    final bool isStoryEnded = context
+        .watch<_StoryLimitController>()
+        .value;
     if (!widget.isCurrentPage && widget.isPaging) {
       widget.animationController!.stop();
     }
@@ -562,17 +569,18 @@ class _IndicatorsState extends State<_Indicators> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: List.generate(
           widget.storyLength,
-          (index) => _Indicator(
-            index: index,
-            indicatorHeight: widget.indicatorHeight,
-            value: (index == currentStoryIndex)
-                ? indicatorAnimation.value
-                : (index > currentStoryIndex)
+              (index) =>
+              _Indicator(
+                index: index,
+                indicatorHeight: widget.indicatorHeight,
+                value: (index == currentStoryIndex)
+                    ? indicatorAnimation.value
+                    : (index > currentStoryIndex)
                     ? 0
                     : 1,
-            indicatorVisitedColor: widget.indicatorVisitedColor,
-            indicatorUnvisitedColor: widget.indicatorUnvisitedColor,
-          ),
+                indicatorVisitedColor: widget.indicatorVisitedColor,
+                indicatorUnvisitedColor: widget.indicatorUnvisitedColor,
+              ),
         ),
       ),
     );
