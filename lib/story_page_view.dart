@@ -357,11 +357,11 @@ class _StoryPageBuilderState extends State<_StoryPageBuilder>
       fit: StackFit.loose,
       alignment: Alignment.topLeft,
       children: [
-        /*Positioned.fill(
+        Positioned.fill(
           child: ColoredBox(
             color: Theme.of(context).scaffoldBackgroundColor,
           ),
-        ),*/
+        ),
         Positioned.fill(
           child: widget.itemBuilder(
             context,
